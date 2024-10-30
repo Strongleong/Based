@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#define BASED_IMPLEMENTATION_H
+#define BASED_IMPLEMENTATION
 #include <based.h>
 
 #define ARRAY_LENGTH(arr) (sizeof(arr) / sizeof(*arr))
