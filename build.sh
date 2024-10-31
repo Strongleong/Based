@@ -2,7 +2,8 @@
 
 CFLAGS="-Wall -Wextra -std=c99 -pedantic"
 CLIBS="-I./lib/"
-CDEBUG="-ggdb -fsanitize=address -fno-omit-frame-pointer"
+CDEBUG="-O0 -ggdb -fsanitize=address -fno-omit-frame-pointer"
+CPROFILE="-pg"
 CRELEASE="-O3 -march=native"
 CC="clang"
 
@@ -12,6 +13,7 @@ DEBUG=false
 
 usage() {
   echo "-d --debug     Compile with debug flags"
+  echo "-p --profile   Compile with profile flags"
   echo "-s --silent    Compile without unnececary output"
   echo "-o --outdir    Set output dir (default: ./out)"
   echo "-c --compiler  Set which compier to use (default: clang)"
@@ -21,6 +23,9 @@ usage() {
 while [[ $# -gt 0 ]]; do
   case "$1" in
     "-d"|"--debug") DEBUG=true
+      shift
+      ;;
+    "-p"|"--profile") CFLAGS="$CPROFILE $CFLAGS"
       shift
       ;;
     "-s"|"--silent") VERBOSE=false
