@@ -3,6 +3,10 @@
 #include <stdio.h>
 #include <string.h>
 
+#define RED(str)   "\x1b[41m\x1b[30m"str"\x1b[0m"
+#define GREEN(str) "\x1b[42m\x1b[30m"str"\x1b[0m"
+#define BLUE(str)  "\x1b[34m"str"\x1b[0m"
+
 #define BASED_IMPLEMENTATION
 #include <based.h>
 
@@ -78,7 +82,7 @@ int main(void) {
     BasedTestCase test_case = test_cases[i];
 
     printf(
-      "[%zu/%zu] Testing %s(\"%s\", \"%s\")... ",
+      BLUE("[%2zu/%-2zu]")" Testing %11s(\"%-16s\", \"%-16s\")... ",
       i + 1,
       test_cases_len,
       algo_names[test_case.algo],
@@ -129,10 +133,10 @@ int main(void) {
     based_encode(test_case.clear_text, clear_case_len, based);
 
     if (strcmp(based, test_case.based_text) != 0) {
-      printf("FAIL");
+      printf(RED("FAIL"));
       en_cases_failed++;
     } else {
-      printf("PASS");
+      printf(GREEN("PASS"));
     }
 
     printf(" | DE: ");
@@ -141,21 +145,21 @@ int main(void) {
     based_decode(test_case.based_text, based_case_len, clear);
 
     if (strcmp(clear, test_case.clear_text) != 0) {
-      printf("FAIL");
+      printf(RED("FAIL"));
       de_cases_failed++;
     } else {
-      printf("PASS");
+      printf(GREEN("PASS"));
     }
 
     printf("\n");
   }
 
   if (de_cases_failed > 0 || en_cases_failed > 0) {
-    printf("%zu/%zu decode tests failed\n", de_cases_failed, test_cases_len);
-    printf("%zu/%zu encode tests failed\n", en_cases_failed, test_cases_len);
+    printf(RED("%zu/%zu decode tests failed")"\n", de_cases_failed, test_cases_len);
+    printf(RED("%zu/%zu encode tests failed")"\n", en_cases_failed, test_cases_len);
     return 1;
   }
 
-  printf("All done!\n");
+  printf(GREEN("All done!")"\n");
   return 0;
 }
