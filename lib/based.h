@@ -215,29 +215,29 @@ BASED_DEF int based64_decode_custom(const char *based_text, size_t based_text_le
   uint8_t pad2 = pad1 && ((based_text_len) % 4 > 2 || based_text[based_text_len - 2] != '=');
   const size_t last = (based_text_len - pad1) / 4 << 2;
 
-  size_t j = 0;
+  char *cursor = clear_text;
 
   for (size_t i = 0; i < last; i += 4) {
     uint32_t n = decode_table[based[i]]     << 18 |
                  decode_table[based[i + 1]] << 12 |
                  decode_table[based[i + 2]] << 6  |
                  decode_table[based[i + 3]];
-    clear_text[j++] = n >> 16;
-    clear_text[j++] = n >> 8 & 0xFF;
-    clear_text[j++] = n & 0xFF;
+    *cursor++ = n >> 16;
+    *cursor++ = n >> 8 & 0xFF;
+    *cursor++ = n & 0xFF;
   }
 
   if (pad1) {
     int n = decode_table[based[last]] << 18 | decode_table[based[last + 1]] << 12;
-    clear_text[j++] = n >> 16;
+    *cursor++ = n >> 16;
 
     if (pad2) {
       n |= decode_table[based[last + 2]] << 6;
-      clear_text[j++] = n >> 8 & 0xFF;
+      *cursor++ = n >> 8 & 0xFF;
     }
   }
 
-  clear_text[j++] = '\0';
+  *cursor = '\0';
   return 0;
 }
 
