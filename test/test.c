@@ -15,16 +15,16 @@
 typedef enum BasedAlgo {
   B64,
   B64URL,
-  /* B32, */
-  /* B32HEX, */
+  B32,
+  B32HEX,
   /* B16, */
 } BasedAlgo;
 
 static char *algo_names[] = {
   [B64]    = "based64",
   [B64URL] = "based64_url",
-  /* [B32]    = "based32", */
-  /* [B32HEX] = "based32_hex", */
+  [B32]    = "based32",
+  [B32HEX] = "based32_hex",
   /* [B16]    = "based16", */
 };
 
@@ -48,20 +48,20 @@ const BasedTestCase test_cases[] = {
    { B64,    "light wor",                   "bGlnaHQgd29y"                         },
    { B64,    "light wo",                    "bGlnaHQgd28="                         },
    { B64,    "light w",                     "bGlnaHQgdw=="                         },
-   /* { B32,    "",                            ""                                     }, */
-   /* { B32,    "f",                           "MY======"                             }, */
-   /* { B32,    "fo",                          "MZXQ===="                             }, */
-   /* { B32,    "foo",                         "MZXW6==="                             }, */
-   /* { B32,    "foob",                        "MZXW6YQ="                             }, */
-   /* { B32,    "fooba",                       "MZXW6YTB"                             }, */
-   /* { B32,    "foobar",                      "MZXW6YTBOI======"                     }, */
-   /* { B32HEX, "",                            ""                                     }, */
-   /* { B32HEX, "f",                           "CO======"                             }, */
-   /* { B32HEX, "fo",                          "CPNG===="                             }, */
-   /* { B32HEX, "foo",                         "CPNMU==="                             }, */
-   /* { B32HEX, "foob",                        "CPNMUOG="                             }, */
-   /* { B32HEX, "fooba",                       "CPNMUOJ1"                             }, */
-   /* { B32HEX, "foobar",                      "CPNMUOJ1E8======"                     }, */
+   { B32,    "",                            ""                                     },
+   { B32,    "f",                           "MY======"                             },
+   { B32,    "fo",                          "MZXQ===="                             },
+   { B32,    "foo",                         "MZXW6==="                             },
+   { B32,    "foob",                        "MZXW6YQ="                             },
+   { B32,    "fooba",                       "MZXW6YTB"                             },
+   { B32,    "foobar",                      "MZXW6YTBOI======"                     },
+   { B32HEX, "",                            ""                                     },
+   { B32HEX, "f",                           "CO======"                             },
+   { B32HEX, "fo",                          "CPNG===="                             },
+   { B32HEX, "foo",                         "CPNMU==="                             },
+   { B32HEX, "foob",                        "CPNMUOG="                             },
+   { B32HEX, "fooba",                       "CPNMUOJ1"                             },
+   { B32HEX, "foobar",                      "CPNMUOJ1E8======"                     },
    /* { B16,    "",                            ""                                     }, */
    /* { B16,    "f",                           "66"                                   }, */
    /* { B16,    "fo",                          "666F"                                 }, */

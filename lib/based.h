@@ -92,11 +92,17 @@ BASED_DEF int based64_url_decode(const char *based_text, size_t based_text_len, 
 // -------------- Based32 --------------
 //
 
-/* BASED_DEF int based32_encode(char *clear, char *based); */
-/* BASED_DEF int based32_decode(char *clear, char *based); */
-/**/
-/* BASED_DEF int based32_hex_encode(char *clear, char *based); */
-/* BASED_DEF int based32_hex_decode(char *clear, char *based); */
+BASED_DEF size_t based32_get_based_len(size_t clear_text_len);
+BASED_DEF size_t based32_get_clear_len(size_t based_text_len);
+
+BASED_DEF int based32_encode_custom(const char *clear_text, size_t clear_text_len, char *based_text, const unsigned char *alphabet, const char padding);
+BASED_DEF int based32_decode_custom(const char *based_text, size_t based_text_len, char *clear_text, const unsigned char *decode_table, const char padding);
+
+BASED_DEF int based32_encode(const char *clear_text, size_t clear_text_len, char *based_text);
+BASED_DEF int based32_decode(const char *based_text, size_t based_text_len, char *clear_text);
+
+BASED_DEF int based32_hex_encode(const char *clear_text, size_t clear_text_len, char *based_text);
+BASED_DEF int based32_hex_decode(const char *based_text, size_t based_text_len, char *clear_text);
 
 //
 // -------------- Based16 --------------
@@ -112,6 +118,7 @@ BASED_DEF int based64_url_decode(const char *based_text, size_t based_text_len, 
 
 #endif /* end of include guard: BASED_H */
 
+#define BASED_IMPLEMENTATION
 #ifdef BASED_IMPLEMENTATION
 
 #include <stdint.h>
@@ -261,21 +268,102 @@ BASED_DEF int based64_url_decode(const char *based_text, size_t based_text_len, 
 // -------------- Based32 --------------
 //
 
-/* BASED_DEF int based32_encode(char *clear_text, char *based_text) { */
-/*   return 0; */
-/* } */
-/**/
-/* BASED_DEF int based32_decode(char *clear, char *based) { */
-/*   return 0; */
-/* } */
-/**/
-/* BASED_DEF int based32_hex_encode(char *clear, char *based) { */
-/*   return 0; */
-/* } */
-/**/
-/* BASED_DEF int based32_hex_decode(char *clear, char *based) { */
-/*   return 0; */
-/* } */
+BASED_DEF size_t based32_get_based_len(size_t clear_text_len) {
+  if (clear_text_len == 0) {
+    return 1; // For \0 to return proper empty string
+  }
+
+  return ((clear_text_len + 5 - 1) / 5) * 8 + 1;
+}
+
+BASED_DEF size_t based32_get_clear_len(size_t based_text_len) {
+  if (based_text_len == 0) {
+    return 1; // For \0 to return proper empty string
+  }
+
+  return based_text_len * 5 / 8 + 1;
+}
+
+BASED_DEF int based32_encode_custom(const char *clear_text, size_t clear_text_len, char *based_text, const unsigned char *alphabet, const char padding) {
+  if (clear_text_len == 0) {
+    *based_text = '\0';
+    return 1;
+  }
+
+  char *cursor = based_text;
+
+  size_t i = 0;
+  for (; clear_text_len - i >= 5; i += 5) {
+    *cursor++ = alphabet[clear_text[i] >> 3];
+    *cursor++ = alphabet[(clear_text[i] & 0x07) << 2 | (clear_text[i + 1] >> 6)];
+    *cursor++ = alphabet[(clear_text[i + 1] & 0x3E) >> 1];
+    *cursor++ = alphabet[(clear_text[i + 1] & 0x01) << 4 | (clear_text[i + 2] >> 4)];
+    *cursor++ = alphabet[(clear_text[i + 2] & 0x0F) << 1 | (clear_text[i + 3] >> 7)];
+    *cursor++ = alphabet[(clear_text[i + 3] & 0x7C) >> 2];
+    *cursor++ = alphabet[(clear_text[i + 3] & 0x03) << 3 | (clear_text[i + 4] >> 5)];
+    *cursor++ = alphabet[clear_text[i + 4] & 0x1F];
+  }
+
+  uint8_t unprocessed_clear_left = clear_text_len - i;
+
+  if (unprocessed_clear_left > 0) {
+    *cursor++ = alphabet[clear_text[i] >> 3];
+
+    switch (unprocessed_clear_left) {
+      case 4:
+        *cursor++ = alphabet[(clear_text[i] & 0x07) << 2 | (clear_text[i + 1] >> 6)];
+        *cursor++ = alphabet[(clear_text[i + 1] & 0x3E) >> 1];
+        *cursor++ = alphabet[(clear_text[i + 1] & 0x01) << 4 | (clear_text[i + 2] >> 4)];
+        *cursor++ = alphabet[(clear_text[i + 2] & 0x0F) << 1 | (clear_text[i + 3] >> 7)];
+        *cursor++ = alphabet[(clear_text[i + 3] & 0x7C) >> 2];
+        *cursor++ = alphabet[(clear_text[i + 3] & 0x03) << 3 | (clear_text[i + 4] >> 5)];
+        break;
+      case 3:
+        *cursor++ = alphabet[(clear_text[i] & 0x07) << 2 | (clear_text[i + 1] >> 6)];
+        *cursor++ = alphabet[(clear_text[i + 1] & 0x3E) >> 1];
+        *cursor++ = alphabet[(clear_text[i + 1] & 0x01) << 4 | (clear_text[i + 2] >> 4)];
+        *cursor++ = alphabet[(clear_text[i + 2] & 0x0F) << 1 | (clear_text[i + 3] >> 7)];
+        *cursor++ = padding;
+        *cursor++ = padding;
+        break;
+      case 2:
+        *cursor++ = alphabet[(clear_text[i] & 0x07) << 2 | (clear_text[i + 1] >> 6)];
+        *cursor++ = alphabet[(clear_text[i + 1] & 0x3E) >> 1];
+        *cursor++ = alphabet[(clear_text[i + 1] & 0x01) << 4 | (clear_text[i + 2] >> 4)];
+        *cursor++ = padding;
+        *cursor++ = padding;
+        *cursor++ = padding;
+        break;
+      case 1:
+        *cursor++ = alphabet[(clear_text[i] & 0x07) << 2 | (clear_text[i + 1] >> 6)];
+        *cursor++ = padding;
+        *cursor++ = padding;
+        *cursor++ = padding;
+        *cursor++ = padding;
+        *cursor++ = padding;
+        break;
+    }
+
+    *cursor++ = padding;
+  }
+
+  *cursor = '\0';
+  return 0;
+}
+
+BASED_DEF int based32_decode_custom(const char *based_text, size_t based_text_len, char *clear_text, const unsigned char *decode_table, const char padding) { return 0; }
+
+BASED_DEF int based32_encode(const char *clear_text, size_t clear_text_len, char *based_text) {
+  return based32_encode_custom(clear_text, clear_text_len, based_text, alphabet_32, based_padding);
+}
+
+BASED_DEF int based32_decode(const char *based_text, size_t based_text_len, char *clear_text) { return 0; }
+
+BASED_DEF int based32_hex_encode(const char *clear_text, size_t clear_text_len, char *based_text) {
+  return based32_encode_custom(clear_text, clear_text_len, based_text, alphabet_32_hex, based_padding);
+}
+
+BASED_DEF int based32_hex_decode(const char *based_text, size_t based_text_len, char *clear_text) { return 0; }
 
 //
 // -------------- Based16 --------------

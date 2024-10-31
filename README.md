@@ -60,7 +60,7 @@ int main(void) {
 
  - [X] Base64 encoding
  - [X]        encoding
- - [ ] Base32 encoding
+ - [X] Base32 encoding
  - [ ]        encoding
  - [ ] Base16 encoding
  - [ ]        encoding
