@@ -94,24 +94,34 @@ int main(void) {
 
     fn_based_encode *based_encode;
     fn_based_decode *based_decode;
+    fn_based_get_len *based_get_clear_len;
+    fn_based_get_len *based_get_based_len;
 
     switch (test_case.algo) {
-    case B64:
-        based_decode = based64_decode;
-        based_encode = based64_encode;
+      case B64:
+        based_decode        = based64_decode;
+        based_encode        = based64_encode;
+        based_get_clear_len = based64_get_clear_len;
+        based_get_based_len = based64_get_based_len;
         break;
       case B64URL:
         based_decode = based64_url_decode;
         based_encode = based64_url_encode;
+        based_get_clear_len = based64_get_clear_len;
+        based_get_based_len = based64_get_based_len;
         break;
-      /* case B32: */
-      /*   based_decode = based32_decode; */
-      /*   based_encode = based32_encode; */
-      /*   break; */
-      /* case B32HEX: */
-      /*   based_decode = based32_hex_decode; */
-      /*   based_encode = based32_hex_encode; */
-      /*   break; */
+      case B32:
+        based_decode = based32_decode;
+        based_encode = based32_encode;
+        based_get_clear_len = based32_get_clear_len;
+        based_get_based_len = based32_get_based_len;
+        break;
+      case B32HEX:
+        based_decode = based32_hex_decode;
+        based_encode = based32_hex_encode;
+        based_get_clear_len = based32_get_clear_len;
+        based_get_based_len = based32_get_based_len;
+        break;
       /* case B16: */
       /*   based_decode = based16_decode; */
       /*   based_encode = based16_encode; */
@@ -121,8 +131,8 @@ int main(void) {
     size_t clear_case_len = strlen(test_case.clear_text);
     size_t based_case_len = strlen(test_case.based_text);
 
-    size_t clear_text_len = based64_get_clear_len(test_case.based_text, based_case_len);
-    size_t based_text_len = based64_get_based_len(clear_case_len);
+    size_t clear_text_len = based_get_clear_len(based_case_len);
+    size_t based_text_len = based_get_based_len(clear_case_len);
 
     char clear[clear_text_len];
     char based[based_text_len];

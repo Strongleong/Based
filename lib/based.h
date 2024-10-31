@@ -70,13 +70,14 @@ extern "C" {
 
 typedef int (fn_based_encode)(const char *clear_text, size_t clear_text_len, char *based_text);
 typedef int (fn_based_decode)(const char *based_text, size_t based_text_len, char *clear_text);
+typedef size_t (fn_based_get_len)(size_t input_len);
 
 //
 // -------------- Based64 --------------
 //
 
-BASED_DEF size_t based64_get_based_len(size_t clear_len);
-BASED_DEF size_t based64_get_clear_len(const char *based, size_t based_len);
+BASED_DEF size_t based64_get_based_len(size_t clear_text_len);
+BASED_DEF size_t based64_get_clear_len(size_t based_text_len);
 
 BASED_DEF int based64_encode_custom(const char *clear_text, size_t clear_text_len, char *based_text, const unsigned char *alphabet, const char padding);
 BASED_DEF int based64_decode_custom(const char *based_text, size_t based_text_len, char *clear_text, const unsigned char *decode_table, const char padding);
@@ -156,18 +157,15 @@ BASED_DEF size_t based64_get_based_len(size_t clear_text_len) {
     return 1; // For \0 to return proper empty string
   }
 
-  return (clear_text_len + 2) / 3 * 4 + 1;
+  return (clear_text_len + 4) / 5 * 8 + 1;
 }
 
-BASED_DEF size_t based64_get_clear_len(const char *based_text, size_t based_text_len) {
+BASED_DEF size_t based64_get_clear_len(size_t based_text_len) {
   if (based_text_len == 0) {
     return 1; // For \0 to return proper empty string
   }
 
-  uint8_t pad1 = based_text_len % 4 || based_text[based_text_len - 1] == '=';
-  uint8_t pad2 = pad1 && (based_text_len % 4 > 2 || based_text[based_text_len - 2] != '=');
-  const size_t last = (based_text_len - pad1) / 4 << 2;
-  return last / 4 * 3 + pad1 + pad2 + 2;
+  return 3 * ((based_text_len >> 2) + 1);
 }
 
 BASED_DEF int based64_encode_custom(const char *clear_text, size_t clear_text_len, char *based_text, const unsigned char *alphabet, const char padding) {
