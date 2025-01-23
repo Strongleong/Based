@@ -1,7 +1,7 @@
 #!/bin/sh
 
 CFLAGS="-Wall -Wextra -std=c99 -pedantic"
-CLIBS="-I./lib/"
+CLIBS="-I./"
 CDEBUG="-O0 -ggdb -fsanitize=address -fno-omit-frame-pointer"
 CPROFILE="-pg"
 CRELEASE="-O3 -march=native"
