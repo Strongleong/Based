@@ -69,3 +69,4 @@ if $VERBOSE; then
 fi
 
 $CC $CFLAGS $CLIBS -o "$OUTDIR/test" ./test/test.c
+$CC $CFLAGS $CLIBS -o "$OUTDIR/generate_decoding_table" ./utils/generate_decoding_table.c
