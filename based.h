@@ -52,7 +52,13 @@
 #define BASED_DEF extern
 #endif
 
-#include <stddef.h>
+#ifdef BASED_NO_STD
+  #ifndef size_t
+    #define size_t unsigned long long
+  #endif
+#else
+  #include <stddef.h>
+#endif
 
 #define BASED_VERSION_MAJOR    0
 #define BASED_VERSION_MINOR    0
@@ -123,10 +129,18 @@ BASED_DEF int based16_decode(const char *clear_text, size_t clear_text_len, char
 
 #endif /* end of include guard: BASED_H */
 
-#define BASED_IMPLEMENTATION
 #ifdef BASED_IMPLEMENTATION
 
-#include <stdint.h>
+#ifdef BASED_NO_STD
+  #ifndef uint8_t
+    #define uint8_t unsigned char
+  #endif
+  #ifndef uint32_t
+    #define uint32_t unsigned int
+  #endif
+#else
+  #include <stdint.h>
+#endif
 
 static const unsigned char based_padding       = '=';
 static const unsigned char alphabet_64[64]     = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
