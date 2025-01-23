@@ -82,7 +82,7 @@ int main(void) {
     BasedTestCase test_case = test_cases[i];
 
     printf(
-      BLUE("[%2zu/%-2zu]")" Testing %11s(\"%-16s\", \"%-16s\")... ",
+      BLUE("[%2zu/%-2zu]")" Testing %-11s(\"%-16s\", \"%-16s\")... ",
       i + 1,
       test_cases_len,
       algo_names[test_case.algo],
