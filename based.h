@@ -1,5 +1,12 @@
 /*
-  Based v0.0.1 - public domain base64,32,16 de/encoding library
+  Based v1.0.1
+  Single file header only library for encoding/decoding `base64`, `base32` and `base16` encodings in C.
+  This library supports encodings with custom padding (`=` at the end of encoded messages)
+  and custom alphabets, if they are have length of 64, 32 or 16.
+  Alphabets for `base64_url` and `base32_hex` encodings are included.
+  Based also don't allocate on heap.
+  Check out examples to see how to use this library
+
   See licese at the end of this file
 
   I did not came up with core logic, but I baseically rewrite what I found on the internet.
@@ -43,6 +50,17 @@
     - Decoder: https://stackoverflow.com/a/37109258   @polfosol
       Decoder code was modified and orignal code was not licensed
 
+
+  Dependencies:
+    - `stddef.h`: `size_t`
+    - `stdint.h`:  `uint8_t` and `uint32_t`
+
+  You can define `BASED_NO_STD` and if will not include dependencies and replace types like this:
+    - `size_t`: `unsigned long long`
+    - `uint8_t`: `unsigned char`
+    - `uint32_t`: `unsigned int`
+
+  If those types already defined, `BASED_NO_STD` will not redefined them. Just exclude std headers.
 */
 
 #ifndef BASED_H
