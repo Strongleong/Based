@@ -214,15 +214,3 @@ int main(void) {
 ```
 
 Examples code in `./examples/` folder
-
-## TODO
-
- - [X] Base64 encoding
- - [X]        encoding
- - [X] Base32 encoding
- - [X]        encoding
- - [X] Base16 encoding
- - [X]        encoding
- - [X] `NO_STD` option
- - [X] More examples
- - [X] More documentation and guides
