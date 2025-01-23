@@ -13,7 +13,16 @@ Check out examples to see how to use this library
 
 ## Dependencies
 
-Only `stddef.h` (for `size_t`) and `stdint.h`
+ - `stddef.h`: `size_t`
+ - `stdint.h`:  `uint8_t` and `uint32_t`
+
+You can define `BASED_NO_STD` and if will not include dependencies and replace types like this:
+
+ - `size_t`: `unsigned long long`
+ - `uint8_t`: `unsigned char`
+ - `uint32_t`: `unsigned int`
+
+If those types already defined, `BASED_NO_STD` will not redefined them. Just exclude std headers.
 
 ## How to run tests
 
