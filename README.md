@@ -223,6 +223,6 @@ Examples code in `./examples/` folder
  - [X]        encoding
  - [X] Base16 encoding
  - [X]        encoding
- - [ ] `NO_STD` option
+ - [X] `NO_STD` option
  - [X] More examples
  - [X] More documentation and guides
