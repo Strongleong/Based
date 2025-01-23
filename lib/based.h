@@ -48,7 +48,6 @@
 #ifndef BASED_H
 #define BASED_H
 
-#include <stdio.h>
 #ifndef BASED_DEF
 #define BASED_DEF extern
 #endif

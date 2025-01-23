@@ -64,9 +64,19 @@ else
   CFLAGS="$CFLAGS $CRELEASE"
 fi
 
+examples=$(find ./examples -name '*.c')
+
 if $VERBOSE; then
   set -x
 fi
 
-$CC $CFLAGS $CLIBS -o "$OUTDIR/test" ./test/test.c
-$CC $CFLAGS $CLIBS -o "$OUTDIR/generate_decoding_table" ./utils/generate_decoding_table.c
+$CC $CFLAGS $CLIBS -o "$OUTDIR/test" ./test/test.c &
+$CC $CFLAGS $CLIBS -o "$OUTDIR/generate_decoding_table" ./utils/generate_decoding_table.c &
+$CC $CFLAGS $CLIBS -o ./examples/base64_encode        ./examples/base64_encode.c &
+$CC $CFLAGS $CLIBS -o ./examples/base64_decode        ./examples/base64_decode.c &
+$CC $CFLAGS $CLIBS -o ./examples/base32_custom_encode ./examples/base32_custom_encode.c &
+$CC $CFLAGS $CLIBS -o ./examples/base32_custom_decode ./examples/base32_custom_decode.c &
+$CC $CFLAGS $CLIBS -o ./examples/base16_encdoe_decode ./examples/base16_encdoe_decode.c &
+
+{ set +x; } 2> /dev/null
+wait

@@ -6,10 +6,12 @@
 void usage(const char *prog_name) {
   fprintf(stderr, "Usage: %s [params] <aphabet>\n", prog_name);
   fprintf(stderr, "Additional params:\n");
+  fprintf(stderr, "    -h  --help     Prints this usage\n");
+  fprintf(stderr, "    -v  --version  Prints version\n");
   fprintf(stderr, "    -n  --name     Name of alphabet\n");
   fprintf(stderr, "Examples:\n");
-  fprintf(stderr, "       %s \"abcdABCD123!@#\"\n", prog_name);
-  fprintf(stderr, "       %s --name base19_awesomeness \"AWESOMEawesome\"\n", prog_name);
+  fprintf(stderr, "    %s \"abcdABCD123!@#\"\n", prog_name);
+  fprintf(stderr, "    %s --name base19_awesomeness \"AWESOMEawesome\"\n", prog_name);
 }
 
 static char *alphabet_name = "alphabet";
@@ -23,10 +25,21 @@ int main(int argc, char *argv[]) {
     return 1;
   }
 
-  if (**argv == '-' && (strcmp(*argv, "--name") == 0 || strcmp(*argv, "-n") == 0)) {
-    SHIFT_ARGS(argc, argv);
-    alphabet_name = *argv;
-    SHIFT_ARGS(argc, argv);
+  if (**argv == '-') {
+    if (strcmp(*argv, "--name") == 0 || strcmp(*argv, "-n") == 0) {
+      SHIFT_ARGS(argc, argv);
+      alphabet_name = *argv;
+      SHIFT_ARGS(argc, argv);
+    } else if (strcmp(*argv, "--help") == 0 || strcmp(*argv, "-h") == 0) {
+      usage(prog_name);
+      return 0;
+    } else if (strcmp(*argv, "--version") == 0 || strcmp(*argv, "-v") == 0) {
+      printf("v1.0.0\n");
+      return 0;
+    } else {
+      printf("ERROR: Unknown argument %s\n", *argv);
+      return 1;
+    }
   }
 
   if (argc == 0) {

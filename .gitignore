@@ -3,3 +3,8 @@ out
 dap.lua
 compile_commands.json
 gmon.out
+./examples/base64_encode
+./examples/base64_decode
+./examples/base32_custom_encode
+./examples/base32_custom_decode
+./examples/base16_encdoe_decode
