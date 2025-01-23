@@ -48,6 +48,7 @@
 #ifndef BASED_H
 #define BASED_H
 
+#include <stdio.h>
 #ifndef BASED_DEF
 #define BASED_DEF extern
 #endif
@@ -108,15 +109,14 @@ BASED_DEF int based32_hex_decode(const char *based_text, size_t based_text_len, 
 // -------------- Based16 --------------
 //
 
-/**/
-/* BASED_DEF int based16_encode(char *clear, char *based); */
-/* BASED_DEF int based16_decode(char *clear, char *based); */
+BASED_DEF size_t based16_get_based_len(size_t clear_text_len);
+BASED_DEF size_t based16_get_clear_len(size_t based_text_len);
 
-//
-// Helper functions for custom encoding alphabets
-//
+BASED_DEF int based16_encode_custom(const char *clear_text, size_t clear_text_len, char *based_text, const unsigned char *alphabet);
+BASED_DEF int based16_decode_custom(const char *based_text, size_t based_text_len, char *clear_text, const unsigned char *decode_table);
 
-BASED_DEF int based_generate_decode_table(const unsigned char *alphabet, size_t alphabet_len, unsigned char decode_table[256]);
+BASED_DEF int based16_encode(const char *clear_text, size_t clear_text_len, char *based_text);
+BASED_DEF int based16_decode(const char *clear_text, size_t clear_text_len, char *based_text);
 
 #ifdef __cplusplus
 } /* extern "C" */
@@ -171,7 +171,6 @@ static const unsigned char decode_table_32[256] =
     15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25
  };
 
-
 static const unsigned char decode_table_32_hex[256] =
 {
     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
@@ -180,6 +179,15 @@ static const unsigned char decode_table_32_hex[256] =
     0,  1,  2,  3,  4,  5,  6,  7,  8,  9,  0,  0,  0,  0,  0,  0,
     0,  10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24,
     25, 26, 27, 28, 29, 30, 31,
+};
+
+static const unsigned char decode_table_16[256] =
+{
+  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+  0,  1,  2,  3,  4,  5,  6,  7,  8,  9,  0,  0,  0,  0,  0,  0,
+  0,  10, 11, 12, 13, 14, 15
 };
 
 //
@@ -379,6 +387,7 @@ BASED_DEF int based32_encode_custom(const char *clear_text, size_t clear_text_le
 }
 
 BASED_DEF int based32_decode_custom(const char *based_text, size_t based_text_len, char *clear_text, const unsigned char *decode_table, const char padding) {
+  (void) padding;
   if (based_text_len == 0) {
     *clear_text = '\0';
     return 1;
@@ -420,24 +429,62 @@ BASED_DEF int based32_hex_decode(const char *based_text, size_t based_text_len, 
 // -------------- Based16 --------------
 //
 
-/* BASED_DEF int based16_encode(char *clear, char *based) { */
-/*   return 0; */
-/* } */
-/**/
-/* BASED_DEF int based16_decode(char *clear, char *based) { */
-/*   return 0; */
-/* } */
-
-//
-// Helper functions for custom encoding alphabets
-//
-
-BASED_DEF int based_generate_decode_table(const unsigned char *alphabet, size_t alphabet_len, unsigned char decode_table[256]) {
-  for (size_t i = 0; i < alphabet_len; i++) {
-    decode_table[alphabet[i]] = i;
+BASED_DEF size_t based16_get_based_len(size_t clear_text_len) {
+  if (clear_text_len == 0) {
+    return 1; // For \0 to return proper empty string
   }
 
+  return clear_text_len * 2 + 1;
+}
+
+BASED_DEF size_t based16_get_clear_len(size_t based_text_len) {
+  if (based_text_len == 0) {
+    return 1; // For \0 to return proper empty string
+  }
+
+  return based_text_len / 2 + 1;
+}
+
+BASED_DEF int based16_encode_custom(const char *clear_text, size_t clear_text_len, char *based_text, const unsigned char *alphabet) {
+  if (clear_text_len == 0) {
+    *based_text = '\0';
+    return 1;
+  }
+
+  char *cursor = based_text;
+
+  for (size_t i = 0; i < clear_text_len; i++) {
+    *cursor++ = alphabet[clear_text[i] >> 4];
+    *cursor++ = alphabet[clear_text[i] & 0x0F];
+  }
+
+  *cursor = '\0';
   return 0;
+}
+
+BASED_DEF int based16_decode_custom(const char *based_text, size_t based_text_len, char *clear_text, const unsigned char *decode_table) {
+  if (based_text_len == 0) {
+    *clear_text = '\0';
+    return 1;
+  }
+
+  const unsigned char *based = (unsigned char *)based_text;
+  char *cursor = clear_text;
+
+  for (size_t i = 0; i < based_text_len; i += 2) {
+    *cursor++ = decode_table[based[i]] << 4 | decode_table[based[i + 1]];
+  }
+
+  *cursor = '\0';
+  return 0;
+}
+
+BASED_DEF int based16_encode(const char *clear_text, size_t clear_text_len, char *based_text) {
+  return based16_encode_custom(clear_text, clear_text_len, based_text, alphabet_16);
+}
+
+BASED_DEF int based16_decode(const char *based_text, size_t based_text_len, char *clear_text) {
+  return based16_decode_custom(based_text, based_text_len, clear_text, decode_table_16);
 }
 
 #endif /* end of include guard: BASED_IMPLEMENTATION */

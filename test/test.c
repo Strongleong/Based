@@ -17,7 +17,7 @@ typedef enum BasedAlgo {
   B64URL,
   B32,
   B32HEX,
-  /* B16, */
+  B16,
 } BasedAlgo;
 
 static char *algo_names[] = {
@@ -25,7 +25,7 @@ static char *algo_names[] = {
   [B64URL] = "based64_url",
   [B32]    = "based32",
   [B32HEX] = "based32_hex",
-  /* [B16]    = "based16", */
+  [B16]    = "based16",
 };
 
 typedef struct BasedTestCase {
@@ -62,13 +62,13 @@ const BasedTestCase test_cases[] = {
    { B32HEX, "foob",                        "CPNMUOG="                             },
    { B32HEX, "fooba",                       "CPNMUOJ1"                             },
    { B32HEX, "foobar",                      "CPNMUOJ1E8======"                     },
-   /* { B16,    "",                            ""                                     }, */
-   /* { B16,    "f",                           "66"                                   }, */
-   /* { B16,    "fo",                          "666F"                                 }, */
-   /* { B16,    "foo",                         "666F6F"                               }, */
-   /* { B16,    "foob",                        "666F6F62"                             }, */
-   /* { B16,    "fooba",                       "666F6F6261"                           }, */
-   /* { B16,    "foobar",                      "666F6F626172"                         }, */
+   { B16,    "",                            ""                                     },
+   { B16,    "f",                           "66"                                   },
+   { B16,    "fo",                          "666F"                                 },
+   { B16,    "foo",                         "666F6F"                               },
+   { B16,    "foob",                        "666F6F62"                             },
+   { B16,    "fooba",                       "666F6F6261"                           },
+   { B16,    "foobar",                      "666F6F626172"                         },
 };
 
 int main(void) {
@@ -122,10 +122,12 @@ int main(void) {
         based_get_clear_len = based32_get_clear_len;
         based_get_based_len = based32_get_based_len;
         break;
-      /* case B16: */
-      /*   based_decode = based16_decode; */
-      /*   based_encode = based16_encode; */
-      /*   break; */
+      case B16:
+        based_decode = based16_decode;
+        based_encode = based16_encode;
+        based_get_clear_len = based16_get_clear_len;
+        based_get_based_len = based16_get_based_len;
+        break;
     }
 
     size_t clear_case_len = strlen(test_case.clear_text);
@@ -164,9 +166,19 @@ int main(void) {
     printf("\n");
   }
 
-  if (de_cases_failed > 0 || en_cases_failed > 0) {
+  if (de_cases_failed > 0) {
     printf(RED("%zu/%zu decode tests failed")"\n", de_cases_failed, test_cases_len);
+  } else {
+    printf(GREEN("%zu/%zu decode tests failed")"\n", de_cases_failed, test_cases_len);
+  }
+
+  if (en_cases_failed > 0) {
     printf(RED("%zu/%zu encode tests failed")"\n", en_cases_failed, test_cases_len);
+  } else {
+    printf(GREEN("%zu/%zu encode tests failed")"\n", en_cases_failed, test_cases_len);
+  }
+
+  if (de_cases_failed > 0 || en_cases_failed > 0) {
     return 1;
   }
 
