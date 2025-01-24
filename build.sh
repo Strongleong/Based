@@ -1,11 +1,14 @@
 #!/bin/sh
 
 CFLAGS="-Wall -Wextra -std=c99 -pedantic"
+CSTD="-std=c99"
+CXXSTD="-std=c++11"
 CLIBS="-I./"
 CDEBUG="-O0 -ggdb -fsanitize=address -fno-omit-frame-pointer"
 CPROFILE="-pg"
 CRELEASE="-O3 -march=native"
 CC="clang"
+CXX="clang++"
 
 OUTDIR="./out"
 VERBOSE=true
@@ -70,13 +73,14 @@ if $VERBOSE; then
   set -x
 fi
 
-$CC $CFLAGS $CLIBS -o "$OUTDIR/test" ./test/test.c &
-$CC $CFLAGS $CLIBS -o "$OUTDIR/generate_decoding_table" ./utils/generate_decoding_table.c &
-$CC $CFLAGS $CLIBS -o ./examples/base64_encode        ./examples/base64_encode.c &
-$CC $CFLAGS $CLIBS -o ./examples/base64_decode        ./examples/base64_decode.c &
-$CC $CFLAGS $CLIBS -o ./examples/base32_custom_encode ./examples/base32_custom_encode.c &
-$CC $CFLAGS $CLIBS -o ./examples/base32_custom_decode ./examples/base32_custom_decode.c &
-$CC $CFLAGS $CLIBS -o ./examples/base16_encdoe_decode ./examples/base16_encdoe_decode.c &
+$CC  $CFLAGS $CSTD   $CLIBS -o "$OUTDIR/test" ./test/test.c &
+$CXX $CFLAGS $CXXSTD $CLIBS -o "$OUTDIR/test++" ./test/test.cpp &
+$CC  $CFLAGS $CSTD   $CLIBS -o "$OUTDIR/generate_decoding_table" ./utils/generate_decoding_table.c &
+$CC  $CFLAGS $CSTD   $CLIBS -o ./examples/base64_encode        ./examples/base64_encode.c &
+$CC  $CFLAGS $CSTD   $CLIBS -o ./examples/base64_decode        ./examples/base64_decode.c &
+$CC  $CFLAGS $CSTD   $CLIBS -o ./examples/base32_custom_encode ./examples/base32_custom_encode.c &
+$CC  $CFLAGS $CSTD   $CLIBS -o ./examples/base32_custom_decode ./examples/base32_custom_decode.c &
+$CC  $CFLAGS $CSTD   $CLIBS -o ./examples/base16_encdoe_decode ./examples/base16_encdoe_decode.c &
 
 { set +x; } 2> /dev/null
 wait

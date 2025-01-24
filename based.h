@@ -161,11 +161,11 @@ BASED_DEF int based16_decode(const char *clear_text, size_t clear_text_len, char
 #endif
 
 static const unsigned char based_padding       = '=';
-static const unsigned char alphabet_64[64]     = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-static const unsigned char alphabet_64_url[64] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
-static const unsigned char alphabet_32[32]     = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
-static const unsigned char alphabet_32_hex[32] = "0123456789ABCDEFGHIJKLMNOPQRSTUV";
-static const unsigned char alphabet_16[16]     = "0123456789ABCDEF";
+static const unsigned char alphabet_64[65]     = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+static const unsigned char alphabet_64_url[65] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
+static const unsigned char alphabet_32[33]     = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
+static const unsigned char alphabet_32_hex[33] = "0123456789ABCDEFGHIJKLMNOPQRSTUV";
+static const unsigned char alphabet_16[17]     = "0123456789ABCDEF";
 
 // Thanks polfosol for this https://stackoverflow.com/a/37109258
 static const unsigned char decode_table_64[256] =
