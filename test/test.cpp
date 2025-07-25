@@ -20,12 +20,13 @@ typedef enum BasedAlgo {
   B16,
 } BasedAlgo;
 
+// WARNING: array designators are a C99 extension [-Wc99-designator]
 static const char *algo_names[] = {
-  [B64]    = "based64",
-  [B64URL] = "based64_url",
-  [B32]    = "based32",
-  [B32HEX] = "based32_hex",
-  [B16]    = "based16",
+  /* [B64]    = */ "based64",
+  /* [B64URL] = */ "based64_url",
+  /* [B32]    = */ "based32",
+  /* [B32HEX] = */ "based32_hex",
+  /* [B16]    = */ "based16",
 };
 
 typedef struct BasedTestCase {

@@ -1,6 +1,6 @@
 #!/bin/sh
 
-CFLAGS="-Wall -Wextra -std=c99 -pedantic"
+CFLAGS="-Wall -Wextra -pedantic"
 CSTD="-std=c99"
 CXXSTD="-std=c++11"
 CLIBS="-I./"
@@ -73,14 +73,17 @@ if $VERBOSE; then
   set -x
 fi
 
-$CC  $CFLAGS $CSTD   $CLIBS -o "$OUTDIR/test" ./test/test.c &
 $CXX $CFLAGS $CXXSTD $CLIBS -o "$OUTDIR/test++" ./test/test.cpp &
-$CC  $CFLAGS $CSTD   $CLIBS -o "$OUTDIR/generate_decoding_table" ./utils/generate_decoding_table.c &
+$CC  $CFLAGS $CSTD   $CLIBS -o "$OUTDIR/test"   ./test/test.c &
+
 $CC  $CFLAGS $CSTD   $CLIBS -o ./examples/base64_encode        ./examples/base64_encode.c &
 $CC  $CFLAGS $CSTD   $CLIBS -o ./examples/base64_decode        ./examples/base64_decode.c &
 $CC  $CFLAGS $CSTD   $CLIBS -o ./examples/base32_custom_encode ./examples/base32_custom_encode.c &
 $CC  $CFLAGS $CSTD   $CLIBS -o ./examples/base32_custom_decode ./examples/base32_custom_decode.c &
 $CC  $CFLAGS $CSTD   $CLIBS -o ./examples/base16_encdoe_decode ./examples/base16_encdoe_decode.c &
+
+$CC  $CFLAGS $CSTD   $CLIBS -o "$OUTDIR/generate_decoding_table" ./tools/generate_decoding_table.c &
+$CC  $CFLAGS $CSTD   $CLIBS -o "$OUTDIR/base64"                  ./tools/base64.c &
 
 { set +x; } 2> /dev/null
 wait
