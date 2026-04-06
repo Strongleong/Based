@@ -1,6 +1,7 @@
 #include <assert.h>
 #include <stdint.h>
 #include <stdio.h>
+#include <strings.h>
 #include <string>
 
 #define RED(str)   "\x1b[41m\x1b[30m" str"\x1b[0m"
@@ -129,6 +130,9 @@ int main(void) {
         based_get_clear_len = based16_get_clear_len;
         based_get_based_len = based16_get_based_len;
         break;
+      default:
+        assert(false && "UNREACHABLE");
+        return 1;
     }
 
     size_t clear_case_len = test_case.clear_text.length();
